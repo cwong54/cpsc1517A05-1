@@ -8,6 +8,13 @@ namespace OOPsReview
 {
     public class Die
     {
+        //create an new instance of the math class Random
+        //this instance (occurance, object) will be shared by each
+        //    instance of the class Die
+        //this instance willbe created when the first instance
+        //    of Die is created
+        private static Random _rnd = new Random();
+
         //this is the definition of a object
         //it is a conceptual view of the data
         //   that will be held by a physical
@@ -19,9 +26,9 @@ namespace OOPsReview
         //   by the user
         //public data memebers CAN be reached directly 
         //   by the user
-        private int _Size;
+        private int _Sides;
         private string _Color;
-       
+
 
         //Properties
         //a property is an external interface between the user
@@ -32,13 +39,13 @@ namespace OOPsReview
         //    b) return a internal data member value to the use
 
         //Fully Implemented Property
-        public int Size
+        public int Sides
         {
             get
             {
                 //takes internal value and returns it to the
                 //   user
-                return _Size;
+                return _Sides;
             }
             set
             {
@@ -50,15 +57,23 @@ namespace OOPsReview
                 //    value
                 if (value >= 6 && value <= 20)
                 {
-                    _Size = value;
+                    _Sides = value;
+                    Roll();  // consider placing this method within the property
+                             //     if the set is public and not private
+                             //if private then the method SetSides solves this
+                             //     problem
                 }
                 else
                 {
                     throw new Exception("Die cannot be " + value.ToString() + " sides. Die must have between 6 and 20 sides.");
                 }
-                
+
             }
         }
+        //another version of Sides using a private set and auto implemented property
+        //in this version you would need to code a method like SetSides() 
+        //public int Sides { get; private set; }
+
 
         //Auto Implemented Property
         // public
@@ -94,8 +109,93 @@ namespace OOPsReview
             }
         }
 
-        //Contructors
+        //Constructors
+
+        //optional; if not supplied the system default constructor
+        //   is used which will assign a system value to each data member/auto
+        //   implement property according to it's datatype
+
+        //you can have any number of contructors within your class
+        //as soon as you code a constructor, your program is responsible for
+        //   all constructors
+
+        //syntax  public classname([list of parameters]) { .... }
+        
+        //Typical Constructors
+        //Default Constructor
+        //this is similiar to the system default constructor
+        public Die()
+        {
+            //you could leave this constructor empty and the system would
+            //    access the normal default value to your data members and
+            //    auto implemented properties
+
+            //you can directly access a private data member any place within
+            //   your class
+            _Sides = 6;
+
+            // you can access any property any place within your class
+            Color = "White";
+
+            //you could use a class method to generate a value for 
+            //   a data member/auto property
+            Roll();
+        }
+
+        //Greedy Constructor
+        //typically has a parameter for each data member and auto implement property
+        //    within your class
+        //parameter order is not important
+        //this constructor allows the outside user to create and assign their
+        //    own values to the data memebers/auto properties at the time of
+        //    instance creation
+        public Die(int sides, string color)
+        {
+            //since this data is coming from an outside source, it is best
+            //    to use your property to save the values; specially if the
+            //    property has validation
+            Sides = sides;
+            Color = color;
+            Roll();
+        }
 
         //Behaviours (methods)
+
+        //these are actions that the class can perform
+        //the actions may or may not alter data members/auto  values
+        //the actions could simply take a value(s) from the user
+        //     and perform some logic operations against the values
+
+        //can be public or private
+        //create a method that allows the user to change the number of 
+        //   sides on a die
+        public void SetSides(int sides)
+        {
+            if (sides >= 6 && sides <= 20)
+            {
+                Sides = sides;
+            }
+            else
+            {
+                //optionally
+                //a) throw a new exception
+                throw new Exception("Invalid value for sides");
+                //b) set _Sides to a default value
+                //Sides = 6;
+
+            }
+            Roll();
+        }
+
+        public void Roll()
+        {
+            //no parameters are required for this method since it will be
+            //   using the internal data values to complete its functionality
+
+            //randomly generate a value for the die depending on the maximum 
+            //   Sides
+            FaceValue = _rnd.Next(1, Sides + 1);
+        }
+
     }
 }
